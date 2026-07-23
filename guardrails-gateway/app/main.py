@@ -1,12 +1,4 @@
-"""
-FastAPI entrypoint. This file's only job is to be the "web layer":
-receive HTTP requests, validate them (via the Pydantic schemas), call
-the core analyze() function, and return the result as JSON.
 
-Exactly 2 endpoints live here, per the project spec. No extra endpoints
-(not even a /health check) -- the spec explicitly says extra endpoints
-count against you.
-"""
 
 from fastapi import FastAPI
 

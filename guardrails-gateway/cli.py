@@ -1,15 +1,4 @@
-"""
-The single required CLI command.
 
-Usage:
-    python cli.py analyze --input sample_request.json --output out.json
-
-This script does NOT contain any detection logic itself -- it's a thin
-client that reads a JSON file, POSTs it to the already-running API,
-and writes the response to a file. This mirrors how a real CLI tool
-(like `curl`, or `aws` CLI) works: it's a convenience wrapper around
-an API, not a reimplementation of the server's logic.
-"""
 
 import argparse
 import json

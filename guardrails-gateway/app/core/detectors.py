@@ -2,9 +2,9 @@
 
 import re
 
-# ---------------------------------------------------------------------------
+
 # 1. Prompt injection / jailbreak detector
-#
+
 INJECTION_PHRASES = [
     "ignore previous instructions",
     "ignore all previous instructions",
@@ -35,14 +35,8 @@ def detect_prompt_injection(text: str) -> list[dict]:
     return reasons
 
 
-# ---------------------------------------------------------------------------
 # 2. PII detection + redaction (emails, phone numbers)
-# ---------------------------------------------------------------------------
-# Regex 101:
-#   [a-zA-Z0-9._%+-]+   -> one or more letters/digits/._%+- (the "local part")
-#   @                   -> a literal @
-#   [a-zA-Z0-9.-]+      -> the domain name
-#   \.[a-zA-Z]{2,}      -> a dot followed by 2+ letters (the TLD, e.g. .com)
+
 EMAIL_PATTERN = re.compile(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}")
 
 # Matches common phone formats: 555-123-4567, (555) 123-4567, +1 555 123 4567
@@ -73,9 +67,8 @@ def redact_pii(text: str) -> tuple[str, list[dict]]:
     return text, reasons
 
 
-# ---------------------------------------------------------------------------
 # 3. RAG injection detector (malicious instructions hidden in retrieved docs)
-# ---------------------------------------------------------------------------
+
 RAG_INJECTION_PHRASES = [
     "system:",
     "override policy",
@@ -115,9 +108,8 @@ def detect_rag_injection(context_docs: list[dict]) -> tuple[list[dict], list[dic
     return sanitized_docs, reasons
 
 
-# ---------------------------------------------------------------------------
 # 4. Risk scoring
-# ---------------------------------------------------------------------------
+
 def compute_risk_score(reasons: list[dict]) -> tuple[int, list[str]]:
     
     tags = sorted(set(r["tag"] for r in reasons))
@@ -134,9 +126,8 @@ def compute_risk_score(reasons: list[dict]) -> tuple[int, list[str]]:
     return score, tags
 
 
-# ---------------------------------------------------------------------------
 # 5. The orchestrator: ties all detectors together into one decision
-# ---------------------------------------------------------------------------
+
 def analyze(prompt: str, context_docs: list[dict], thresholds: dict) -> dict:
     
     injection_reasons = detect_prompt_injection(prompt)
